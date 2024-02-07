@@ -2,8 +2,7 @@
 
 namespace Eptic\ApplicationMenu;
 
-use Illuminate\Contracts\View\View as ContractsView;
-use Illuminate\Support\Facades\View;
+use Illuminate\Contracts\View\View;
 use RuntimeException;
 
 class Menu
@@ -28,13 +27,14 @@ class Menu
      */
     protected array $visibleLinks = [];
 
-    private string $view = '_utils.application-menu.template';
+    private ?string $view;
 
-    private string $breadcrumbsView = '_utils.application-menu.breadcrumbs';
+    private ?string $breadcrumbsView;
 
     private function __construct(private string $name)
     {
-        //
+        $this->view = config('application-menu.view');
+        $this->breadcrumbsView = config('application-menu.breadcrumbs.view');
     }
 
     public static function getInstances(): array
@@ -47,6 +47,11 @@ class Menu
         static::$instances[$name] = $instance;
     }
 
+    /**
+     * @param null|string $name 
+     * @return Menu
+     * @throws RuntimeException 
+     */
     public static function getInstance(?string $name = null): self
     {
         $name ??= 'main';
@@ -140,21 +145,21 @@ class Menu
         return $this;
     }
 
-    public function render(?string $view = null): ContractsView
+    public function render(?string $view = null): View
     {
         $view ??= $this->view;
 
-        return View::make($view, [
+        return view($view, [
             'links' => $this->getLinks(),
             'activeIndex' => $this->getActiveIndex(),
         ]);
     }
 
-    public function renderBreadCrumbs(?string $view = null): ContractsView
+    public function renderBreadCrumbs(?string $view = null): View
     {
         $view ??= $this->breadcrumbsView;
 
-        return View::make($view, [
+        return view($view, [
             'links' => $this->getLinks(true),
             'activeIndex' => $this->getActiveIndex(true),
         ]);

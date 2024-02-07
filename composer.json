@@ -1,7 +1,19 @@
 {
   "name": "eptic/application-menu",
+  "description": "A Laravel package to manage application menus",
+  "keywords": [
+    "eptic",
+    "laravel",
+    "menu",
+    "application"
+  ],
   "type": "library",
-  "license": "GPL-3.0",
+  "license": "GPL-3.0-only",
+  "homepage": "https://github.com/EPTIC-Solutions/application-menu",
+  "support": {
+    "issues": "https://github.com/EPTIC-Solutions/application-menu/issues",
+    "source": "https://github.com/EPTIC-Solutions/application-menu"
+  },
   "autoload": {
     "psr-4": {
       "Eptic\\ApplicationMenu\\": "src/"
@@ -14,6 +26,23 @@
     }
   ],
   "require": {
+    "php": "^8.2",
+    "illuminate/contracts": "^10.0|^11.0",
     "illuminate/support": "^10.0|^11.0"
-  }
+  },
+  "require-dev": {
+    "laravel/framework": "^10.0|^11.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Eptic\\ApplicationMenu\\ApplicationMenuServiceProvider"
+      ]
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
