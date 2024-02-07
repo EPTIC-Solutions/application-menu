@@ -3,7 +3,6 @@
 namespace Eptic\ApplicationMenu;
 
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 
 class MenuItem

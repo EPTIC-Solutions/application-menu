@@ -37,7 +37,10 @@
     "laravel": {
       "providers": [
         "Eptic\\ApplicationMenu\\ApplicationMenuServiceProvider"
-      ]
+      ],
+      "aliases": {
+        "Menu": "Eptic\\ApplicationMenu\\Menu"
+      }
     }
   },
   "config": {

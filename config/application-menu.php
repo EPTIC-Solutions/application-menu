@@ -6,7 +6,7 @@ return [
      * This can also be controlled on the menu level.
      */
     'view' => null,
-    'breadcrumbs_view' => [
+    'breadcrumbs' => [
         /**
          * The default view that will be used to render the breadcrumbs menu.
          * This can also be controlled on the menu level.
