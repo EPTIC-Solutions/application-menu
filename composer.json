@@ -1,0 +1,19 @@
+{
+  "name": "eptic/application-menu",
+  "type": "library",
+  "license": "GPL-3.0",
+  "autoload": {
+    "psr-4": {
+      "Eptic\\ApplicationMenu\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Cristian Bilu",
+      "email": "cristian@eptic.ro"
+    }
+  ],
+  "require": {
+    "illuminate/support": "^10.0|^11.0"
+  }
+}
