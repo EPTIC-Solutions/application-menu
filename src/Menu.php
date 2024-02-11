@@ -87,7 +87,7 @@ class Menu
             $addSubmenuCallback($menuItem);
         }
         $this->links[] = $menuItem;
-        if (!$menuItem->isHidden()) {
+        if (!$menuItem->isHidden() && ($menuItem->getUrl() || $menuItem->hasSubMenus())) {
             $this->visibleLinks[] = $menuItem;
         }
 
