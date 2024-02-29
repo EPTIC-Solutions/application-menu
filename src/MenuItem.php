@@ -19,7 +19,7 @@ class MenuItem
         private string $label,
         private ?string $url = null,
         private bool $hidden = false,
-        private ?string $description = null,
+        private ?string $description = null
     ) {
         //
     }
@@ -28,7 +28,7 @@ class MenuItem
         string $label,
         ?string $route = null,
         bool $hidden = false,
-        ?string $description = null,
+        ?string $description = null
     ): self {
         $subMenu = new self($label, $route, $hidden, $description);
         $this->subMenus[] = $subMenu;
@@ -92,7 +92,10 @@ class MenuItem
 
         $parsedMenuUrl = parse_url($url);
         if (isset($parsedMenuUrl['path'])) {
-            if (!isset($parsedUrl['path']) || $parsedMenuUrl['path'] !== $parsedUrl['path']) {
+            if (
+                !isset($parsedUrl['path']) ||
+                $parsedMenuUrl['path'] !== $parsedUrl['path']
+            ) {
                 return false;
             }
 
@@ -100,10 +103,13 @@ class MenuItem
                 return true;
             }
 
-            if (!isset($parsedUrl['query']) || !Str::contains(
-                $parsedUrl['query'],
-                explode('&', $parsedMenuUrl['query'])
-            )) {
+            if (
+                !isset($parsedUrl['query']) ||
+                !Str::contains(
+                    $parsedUrl['query'],
+                    explode('&', $parsedMenuUrl['query'])
+                )
+            ) {
                 return false;
             }
 
@@ -125,6 +131,9 @@ class MenuItem
 
         $searchUrl ??= Request::fullUrl();
         $parsedUrl = parse_url($searchUrl);
+        if (!$parsedUrl) {
+            return false;
+        }
 
         if ($this->url && $this->isActiveUrl($parsedUrl, $this->url)) {
             return true;

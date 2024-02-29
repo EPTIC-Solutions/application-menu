@@ -48,9 +48,7 @@ class Menu
     }
 
     /**
-     * @param null|string $name 
-     * @return Menu
-     * @throws RuntimeException 
+     * @throws RuntimeException
      */
     public static function getInstance(?string $name = null): self
     {
