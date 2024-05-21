@@ -19,7 +19,8 @@ class MenuItem
         private string $label,
         private ?string $url = null,
         private bool $hidden = false,
-        private ?string $description = null
+        private ?string $description = null,
+        private array $data = [],
     ) {
         //
     }
@@ -28,9 +29,10 @@ class MenuItem
         string $label,
         ?string $route = null,
         bool $hidden = false,
-        ?string $description = null
+        ?string $description = null,
+        array $data = [],
     ): self {
-        $subMenu = new self($label, $route, $hidden, $description);
+        $subMenu = new self($label, $route, $hidden, $description, $data);
         $this->subMenus[] = $subMenu;
         if (!$hidden) {
             $this->visibleSubMenus[] = $subMenu;
