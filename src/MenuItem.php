@@ -21,7 +21,7 @@ class MenuItem
         private ?string $url = null,
         private bool $hidden = false,
         private ?string $description = null,
-        private Fluent $data = [],
+        private Fluent $data = new Fluent(),
     ) {
         //
     }
@@ -45,6 +45,11 @@ class MenuItem
     public function getUrl(): ?string
     {
         return $this->url;
+    }
+
+    public function getData(): Fluent
+    {
+        return $this->data;
     }
 
     public function getVisibleSubMenus(bool $breadCrumbs = false): array
