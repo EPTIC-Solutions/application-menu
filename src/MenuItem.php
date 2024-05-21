@@ -3,6 +3,7 @@
 namespace Eptic\ApplicationMenu;
 
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 
 class MenuItem
@@ -20,7 +21,7 @@ class MenuItem
         private ?string $url = null,
         private bool $hidden = false,
         private ?string $description = null,
-        private array $data = [],
+        private Fluent $data = [],
     ) {
         //
     }
@@ -30,9 +31,9 @@ class MenuItem
         ?string $route = null,
         bool $hidden = false,
         ?string $description = null,
-        array $data = [],
+        array|Fluent $data = [],
     ): self {
-        $subMenu = new self($label, $route, $hidden, $description, $data);
+        $subMenu = new self($label, $route, $hidden, $description, ($data instanceof Fluent) ? $data : new Fluent($data));
         $this->subMenus[] = $subMenu;
         if (!$hidden) {
             $this->visibleSubMenus[] = $subMenu;
