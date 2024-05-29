@@ -52,6 +52,15 @@ class MenuItem
         return $this->data;
     }
 
+    public function setData(Fluent|array $data): self
+    {
+        if (is_array($data)) {
+            $data = new Fluent($data);
+        }
+        $this->data = $data;
+        return $this;
+    }
+
     public function getVisibleSubMenus(bool $breadCrumbs = false): array
     {
         if ($breadCrumbs) {
