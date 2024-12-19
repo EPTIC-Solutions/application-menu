@@ -32,7 +32,8 @@
   },
   "require-dev": {
     "laravel/framework": "^11.0",
-    "laravel/pint": "^1.14"
+    "laravel/pint": "^1.14",
+    "pestphp/pest": "^3.7"
   },
   "extra": {
     "laravel": {
@@ -45,7 +46,10 @@
     }
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "pestphp/pest-plugin": true
+    }
   },
   "minimum-stability": "dev",
   "prefer-stable": true

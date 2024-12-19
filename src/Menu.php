@@ -94,9 +94,6 @@ class Menu
 
     public function getActiveLink(bool $breadCrumbs = false, ?string $searchUrl = null): ?MenuItem
     {
-        /**
-         * @var MenuItem $link
-         */
         foreach ($this->getLinks($breadCrumbs) as $link) {
             if ($link->isCurrent($searchUrl)) {
                 return $link;
@@ -108,9 +105,6 @@ class Menu
 
     public function getActiveIndex(bool $breadCrumbs = false, ?string $searchUrl = null): int
     {
-        /**
-         * @var MenuItem $link
-         */
         foreach ($this->getLinks($breadCrumbs) as $index => $link) {
             if ($link->isCurrent($searchUrl)) {
                 return $index;
