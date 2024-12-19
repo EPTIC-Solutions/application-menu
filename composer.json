@@ -8,7 +8,7 @@
     "application"
   ],
   "type": "library",
-  "license": "GLWT",
+  "license": "GLWTPL",
   "homepage": "https://github.com/EPTIC-Solutions/application-menu",
   "support": {
     "issues": "https://github.com/EPTIC-Solutions/application-menu/issues",
