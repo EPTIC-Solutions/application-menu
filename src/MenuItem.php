@@ -25,6 +25,7 @@ class MenuItem
         private readonly bool $hidden = false,
         private readonly ?string $description = null,
         private Fluent $data = new Fluent,
+        private readonly ?string $id = null,
     ) {
         //
     }
@@ -35,8 +36,9 @@ class MenuItem
         bool $hidden = false,
         ?string $description = null,
         array|Fluent $data = [],
+        ?string $id = null,
     ): self {
-        $subMenu = new self($label, $route, $hidden, $description, ($data instanceof Fluent) ? $data : new Fluent($data));
+        $subMenu = new self($label, $route, $hidden, $description, ($data instanceof Fluent) ? $data : new Fluent($data), $id);
         $this->subMenus[] = $subMenu;
         if (!$hidden) {
             $this->visibleSubMenus[] = $subMenu;
@@ -48,6 +50,11 @@ class MenuItem
     public function getUrl(): ?string
     {
         return $this->url;
+    }
+
+    public function getId(): ?string
+    {
+        return $this->id;
     }
 
     public function getData(): Fluent
