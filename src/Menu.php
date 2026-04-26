@@ -2,10 +2,14 @@
 
 namespace Eptic\ApplicationMenu;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Request;
+use JsonSerializable;
 use RuntimeException;
 
-class Menu
+class Menu implements Arrayable, Jsonable, JsonSerializable
 {
     /**
      * @var array<string, callable>
@@ -30,6 +34,8 @@ class Menu
     private ?string $view;
 
     private ?string $breadcrumbsView;
+
+    protected ?string $currentUrl = null;
 
     private function __construct(private string $name)
     {
@@ -81,6 +87,7 @@ class Menu
         ?string $description = null,
     ): self {
         $menuItem = new MenuItem($label, $route, $hidden, $description);
+        $menuItem->setCurrentUrl($this->getCurrentUrl());
         if ($addSubmenuCallback) {
             $addSubmenuCallback($menuItem);
         }
@@ -155,5 +162,39 @@ class Menu
             'links' => $this->getLinks(true),
             'activeIndex' => $this->getActiveIndex(true),
         ]);
+    }
+
+    public function getCurrentUrl(): ?string
+    {
+        return $this->currentUrl;
+    }
+
+    public function setCurrentUrl(?string $currentUrl): static
+    {
+        $this->currentUrl = $currentUrl;
+        foreach ($this->links as $link) {
+            $link->setCurrentUrl($currentUrl);
+        }
+
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'links' => $this->getLinks(),
+            'breadcrumbs' => $this->getLinks(true),
+            'activeIndex' => $this->getActiveIndex(),
+        ];
+    }
+
+    public function toJson($options = 0)
+    {
+        return json_encode($this->toArray(), $options);
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return $this->toArray();
     }
 }

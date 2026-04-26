@@ -99,5 +99,4 @@ describe('MenuItem', function () {
 
         expect($menuItem->isActive($activeUrl))->toBeTrue();
     });
-
 });

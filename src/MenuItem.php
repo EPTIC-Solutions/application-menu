@@ -2,12 +2,15 @@
 
 namespace Eptic\ApplicationMenu;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Fluent;
 use Illuminate\Support\Str;
 use Illuminate\Support\Uri;
+use JsonSerializable;
 
-class MenuItem
+class MenuItem implements Arrayable, Jsonable, JsonSerializable
 {
     /** @var array<MenuItem> */
     private array $subMenus = [];
@@ -18,6 +21,8 @@ class MenuItem
     private ?bool $isCurrentCache = null;
 
     private ?string $breadcrumbLabel;
+
+    private ?string $currentUrl = null;
 
     public function __construct(
         private readonly string $label,
@@ -39,6 +44,7 @@ class MenuItem
         ?string $id = null,
     ): self {
         $subMenu = new self($label, $route, $hidden, $description, ($data instanceof Fluent) ? $data : new Fluent($data), $id);
+        $subMenu->setCurrentUrl($this->getCurrentUrl());
         $this->subMenus[] = $subMenu;
         if (!$hidden) {
             $this->visibleSubMenus[] = $subMenu;
@@ -160,7 +166,7 @@ class MenuItem
             return false;
         }
 
-        $searchUrl ??= Request::fullUrl();
+        $searchUrl ??= $this->getCurrentUrl() ?? Request::fullUrl();
         $parsedUrl = parse_url($searchUrl);
         if (!$parsedUrl) {
             return false;
@@ -170,13 +176,7 @@ class MenuItem
             return true;
         }
 
-        foreach ($this->subMenus as $subMenu) {
-            if ($subMenu->isCurrent($searchUrl)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($this->subMenus, fn (MenuItem $subMenu) => $subMenu->isCurrent($searchUrl));
     }
 
     public function hasSubMenus(bool $breadCrumbs = false): bool
@@ -204,5 +204,45 @@ class MenuItem
     public function getBreadcrumbLabel(): string
     {
         return $this->breadcrumbLabel ?? $this->label;
+    }
+
+    public function getCurrentUrl(): ?string
+    {
+        return $this->currentUrl;
+    }
+
+    public function setCurrentUrl(?string $currentUrl): static
+    {
+        $this->currentUrl = $currentUrl;
+        foreach ($this->subMenus as $subMenu) {
+            $subMenu->setCurrentUrl($currentUrl);
+        }
+
+        return $this;
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'label' => $this->getLabel(),
+            'breadcrumbLabel' => $this->getBreadcrumbLabel(),
+            'description' => $this->getDescription(),
+            'url' => $this->getUrl(),
+            'hasSubMenus' => $this->hasSubMenus(),
+            'hidden' => $this->isHidden(),
+            'data' => $this->getData(),
+            'isActive' => $this->isActive(),
+            'visibleSubMenus' => $this->getVisibleSubMenus(),
+        ];
+    }
+
+    public function toJson($options = 0): string
+    {
+        return json_encode($this->toArray(), $options);
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return $this->toArray();
     }
 }
