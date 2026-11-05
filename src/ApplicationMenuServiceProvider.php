@@ -13,6 +13,8 @@ class ApplicationMenuServiceProvider extends ServiceProvider
 
     public function register(): void
     {
+        $this->app->singleton(MenuManager::class);
+
         $this->publishes([
             __DIR__ . '/../config/application-menu.php' => config_path('application-menu.php'),
         ], 'config');

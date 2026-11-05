@@ -5,22 +5,11 @@ namespace Eptic\ApplicationMenu;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Request;
 use JsonSerializable;
 use RuntimeException;
 
 class Menu implements Arrayable, Jsonable, JsonSerializable
 {
-    /**
-     * @var array<string, callable>
-     */
-    protected static array $instances = [];
-
-    /**
-     * @var array<string, self>
-     */
-    protected static array $cachedInstances = [];
-
     /**
      * @var MenuItem[]
      */
@@ -37,41 +26,45 @@ class Menu implements Arrayable, Jsonable, JsonSerializable
 
     protected ?string $currentUrl = null;
 
-    private function __construct(private string $name)
+    /**
+     * Menus are built by the MenuManager from their definitions; use Menu::newMenu() to define one.
+     *
+     * @internal
+     */
+    public function __construct(private string $name)
     {
         $this->view = config('application-menu.view');
         $this->breadcrumbsView = config('application-menu.breadcrumbs.view');
     }
 
+    /**
+     * The menu definitions of the container's MenuManager.
+     *
+     * @return array<string, callable(Menu): mixed>
+     */
     public static function getInstances(): array
     {
-        return static::$instances;
-    }
-
-    public static function newMenu(string $name, callable $instance): void
-    {
-        static::$instances[$name] = $instance;
+        return app(MenuManager::class)->definitions();
     }
 
     /**
+     * Define a menu on the container's MenuManager.
+     *
+     * @param  callable(Menu): mixed  $instance
+     */
+    public static function newMenu(string $name, callable $instance): void
+    {
+        app(MenuManager::class)->define($name, $instance);
+    }
+
+    /**
+     * Get a built menu from the container's MenuManager.
+     *
      * @throws RuntimeException
      */
     public static function getInstance(?string $name = null): self
     {
-        $name ??= 'main';
-        if (isset(static::$cachedInstances[$name])) {
-            return static::$cachedInstances[$name];
-        }
-
-        if (isset(static::$instances[$name])) {
-            $newMenu = new static($name);
-            static::$instances[$name]($newMenu);
-            static::$cachedInstances[$name] = $newMenu;
-
-            return $newMenu;
-        }
-
-        throw new RuntimeException('Could not find application menu with name: ' . $name);
+        return app(MenuManager::class)->get($name);
     }
 
     public function getName(): string
