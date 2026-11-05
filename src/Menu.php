@@ -5,7 +5,6 @@ namespace Eptic\ApplicationMenu;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Contracts\View\View;
-use Illuminate\Support\Facades\Request;
 use JsonSerializable;
 use RuntimeException;
 
