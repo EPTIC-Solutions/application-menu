@@ -1,21 +1,28 @@
 <?php
 
 use Eptic\ApplicationMenu\Menu;
-use Eptic\ApplicationMenu\MenuManager;
 
-test('it builds a menu once and reuses it until the built menus are forgotten', function () {
+test('it builds a menu once per request and reuses it within that request', function () {
     $builds = 0;
     Menu::newMenu('main', function (Menu $menu) use (&$builds) {
         $builds++;
         $menu->add('Home', 'https://example.com');
     });
 
+    expect(Menu::getInstance())->toBe(Menu::getInstance())
+        ->and($builds)->toBe(1);
+});
+
+test('it builds the menu again for the next request on a long-lived worker and keeps its definition', function () {
+    $builds = 0;
+    Menu::newMenu('main', function (Menu $menu) use (&$builds) {
+        $builds++;
+        $menu->add('Home', 'https://example.com');
+    });
     $first = Menu::getInstance();
 
-    expect(Menu::getInstance())->toBe($first)
-        ->and($builds)->toBe(1);
-
-    app(MenuManager::class)->forgetBuilt();
+    // What Laravel Octane does after every request, and the queue worker before every job.
+    app()->forgetScopedInstances();
 
     expect(Menu::getInstance())->not->toBe($first)
         ->and($builds)->toBe(2)
@@ -31,11 +38,6 @@ test('redefining a menu replaces the one already built', function () {
     expect(Menu::getInstance()->getLinks()[0]->getLabel())->toBe('New');
 });
 
-test('it keeps no menus outside the manager bound in the container', function () {
-    Menu::newMenu('main', fn (Menu $menu) => $menu->add('Home', 'https://example.com'));
-
-    app()->forgetInstance(MenuManager::class);
-
-    expect(Menu::getInstances())->toBeEmpty()
-        ->and(fn () => Menu::getInstance())->toThrow(RuntimeException::class);
-});
+test('it throws for a menu that was never defined', function () {
+    Menu::getInstance('missing');
+})->throws(RuntimeException::class, 'Could not find application menu with name: missing');

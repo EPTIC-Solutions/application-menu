@@ -27,7 +27,7 @@ class Menu implements Arrayable, Jsonable, JsonSerializable
     protected ?string $currentUrl = null;
 
     /**
-     * Menus are built by the MenuManager from their definitions; use Menu::newMenu() to define one.
+     * Menus are built by the MenuRegistry from their definitions; use Menu::newMenu() to define one.
      *
      * @internal
      */
@@ -38,27 +38,27 @@ class Menu implements Arrayable, Jsonable, JsonSerializable
     }
 
     /**
-     * The menu definitions of the container's MenuManager.
+     * The menu definitions registered on the container's MenuRegistry.
      *
      * @return array<string, callable(Menu): mixed>
      */
     public static function getInstances(): array
     {
-        return app(MenuManager::class)->definitions();
+        return app(MenuRegistry::class)->definitions();
     }
 
     /**
-     * Define a menu on the container's MenuManager.
+     * Define a menu on the container's MenuRegistry.
      *
      * @param  callable(Menu): mixed  $instance
      */
     public static function newMenu(string $name, callable $instance): void
     {
-        app(MenuManager::class)->define($name, $instance);
+        app(MenuRegistry::class)->define($name, $instance);
     }
 
     /**
-     * Get a built menu from the container's MenuManager.
+     * Get the menu built for the current request by the container's MenuManager.
      *
      * @throws RuntimeException
      */
